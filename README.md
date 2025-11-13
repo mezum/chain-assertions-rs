@@ -1,6 +1,6 @@
 # chain-assertions
 
-[![Workflow Status](https://github.com/mezum/chain-assertions-rs/workflows/Rust/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
+[![Workflow Status](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
 
 This crate provides the assertion that can be insert between method chains.
 
