@@ -5,7 +5,7 @@
 [![Documentations](https://img.shields.io/docsrs/chain-assertions?logo=docsdotrs)](https://docs.rs/chain-assertions)
 ![License](https://img.shields.io/crates/l/chain-assertions)
 ![MSRV](https://img.shields.io/crates/msrv/chain-assertions?logo=rust)
-![Coverage](https://img.shields.io/codecov/c/github/mezum/chain-assertions-rs?logo=codecov)
+[![Coverage](https://img.shields.io/codecov/c/github/mezum/chain-assertions-rs?logo=codecov)](https://app.codecov.io/gh/mezum/chain-assertions-rs)
 [![CI](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
 
 This crate provides the assertion that can be insert between method chains.
