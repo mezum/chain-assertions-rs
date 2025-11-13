@@ -1,6 +1,8 @@
 # chain-assertions
 
 [![Workflow Status](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
+[![crates.io](https://img.shields.io/crates/v/chain-assertions.svg)](https://crates.io/crates/chain-assertions)
+[![docs.rs](https://docs.rs/crate-name/badge.svg)](https://docs.rs/chain-assertions)
 
 This crate provides the assertion that can be insert between method chains.
 
@@ -28,13 +30,17 @@ let target = i32::from_str_radix("21", 10)
     .debug_assert_ok()
     .map(|v| v * 2);
 assert_eq!(target, Ok(42));
+```
+
+```rust,ignore
+use chain_assertions::prelude::*;
 
 let target = i32::from_str_radix("foobar", 10)
     .debug_assert_ok()
     // ^-- panic occurred here if debug_assertion is enabled
     //     but if debug_assertion is disabled, no error happened.
     .map(|v| v * 2);
-assert!(matches!(target, Err(_)), "should be Err");
+assert!(matches!(target, Err(_)), "Should be Err");
 ```
 
 ## Motivation
