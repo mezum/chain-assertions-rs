@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  pull_request:
+  merge_group:
+
+jobs:
+  clippy:
+    run-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run clippy
+        run: cargo clippy
+  
+  test:
+    needs:
+      - clippy
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        release-flag:
+          - "--release"
+          - ""
+        passthrough-flag:
+          - "--features=passthrough"
+          - ""
+    run-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: cargo test ${{ matrix.release-flag }} ${{ matrix.passthrough-flag }}

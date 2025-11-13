@@ -1,0 +1,22 @@
+[package]
+name = "chain-assertions"
+version = "0.1.0"
+description = "Insertable assertions into method chains"
+repository = "https://github.com/mezum/chain-assertions-rs"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+
+authors = ["Kitsunesaki Mezumona <dev@mezum.jp>"]
+categories = ["development-tools::debugging", "no-std::no-alloc"]
+keywords = ["assertions", "chaining", "debugging", "utility"]
+
+edition = "2021"
+rust-version = "1.56.1"
+
+[badges]
+github = { repository = "mezum/chain-assertions-rs", workflow = "ci" }
+
+[features]
+default = ["std"]
+std = []
+passthrough = []
