@@ -2,7 +2,7 @@
 
 [![Workflow Status](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
 [![crates.io](https://img.shields.io/crates/v/chain-assertions.svg)](https://crates.io/crates/chain-assertions)
-[![docs.rs](https://docs.rs/crate-name/badge.svg)](https://docs.rs/chain-assertions)
+[![docs.rs](https://docs.rs/chain-assertions/badge.svg)](https://docs.rs/chain-assertions)
 
 This crate provides the assertion that can be insert between method chains.
 
