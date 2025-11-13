@@ -348,11 +348,17 @@ mod tests {
         }
 
         #[test]
-        #[should_panic(expected = "Expected Some(_), got None")]
+        #[cfg_attr(
+            all(debug_assertions, not(feature = "passthrough")),
+            should_panic(expected = "Expected Some(_), got None")
+        )]
         fn it_fails_on_none() {
             let x: Option<i32> = None;
-            let _ = x.assert_some_and(|x| x >= &20).map(|x| x * 2);
+            let _ = x.debug_assert_some_and(|x| x >= &20).map(|x| x * 2);
             //        ^-- should panic here
+
+            // for debug builds
+            assert_eq!(x, None);
         }
     }
 
