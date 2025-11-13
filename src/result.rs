@@ -395,10 +395,10 @@ mod tests {
 
         #[test]
         fn it_succeeds_on_ok() {
-            let x: Result<NonDebuggable, Debuggable> = Ok(NonDebuggable);
-            let x = x.debug_assert_ok();
+            let x: Result<i32, Debuggable> = Ok(41);
+            let x = x.debug_assert_ok().map(|x| x + 1);
 
-            assert!(matches!(x, Ok(NonDebuggable)), "Expected Ok(_)");
+            assert!(matches!(x, Ok(42)), "Expected Ok(42)");
         }
 
         #[test]
@@ -406,9 +406,9 @@ mod tests {
             all(debug_assertions, not(feature = "passthrough")),
             should_panic = "Expected Ok(_), got Err(Debuggable)"
         )]
-        fn it_fails_on_err_only_in_debug_mode() {
-            let x: Result<NonDebuggable, Debuggable> = Err(Debuggable);
-            let x = x.debug_assert_ok();
+        fn it_fails_on_err() {
+            let x: Result<i32, Debuggable> = Err(Debuggable);
+            let x = x.debug_assert_ok().map(|x| x + 1);
             //        ^-- panic here only in debug builds
 
             // for debug builds
@@ -440,6 +440,20 @@ mod tests {
             // for debug builds
             assert_eq!(x, Ok(42), "Expected Ok(42)");
         }
+
+        #[test]
+        #[cfg_attr(
+            all(debug_assertions, not(feature = "passthrough")),
+            should_panic = "Expected Ok(_), got Err(Debuggable)"
+        )]
+        fn it_fails_on_err() {
+            let x: Result<i32, Debuggable> = Err(Debuggable);
+            let x = x.debug_assert_ok_and(|x| x >= &20).map(|x| x);
+            //        ^-- should panic here only in debug builds
+
+            // for debug builds
+            assert!(matches!(x, Err(Debuggable)), "Expected Err(Debuggable)");
+        }
     }
 
     mod assert_err {
@@ -458,9 +472,9 @@ mod tests {
         #[test]
         #[should_panic(expected = "Expected Err(_), got Ok(Debuggable)")]
         fn it_fails_on_ok() {
-            let x: Result<Debuggable, NonDebuggable> = Ok(Debuggable);
-            let _ = x.assert_err();
-            //          ^-- should panic here
+            let x: Result<Debuggable, i32> = Ok(Debuggable);
+            let _ = x.assert_err().map_err(|x| x * 2);
+            //        ^-- should panic here
         }
     }
 
@@ -469,25 +483,25 @@ mod tests {
 
         #[test]
         fn it_succeeds_on_err_and_condition_satisfied() {
-            let x: Result<Debuggable, i32> = Err(42);
-            let x = x.assert_err_and(|x| x == &42);
+            let x: Result<Debuggable, i32> = Err(21);
+            let x = x.assert_err_and(|x| x == &21).map_err(|x| x * 2);
             assert_eq!(x, Err(42), "Expected Err(42)");
         }
 
         #[test]
-        #[should_panic(expected = "Condition not satisfied for Err(42)")]
+        #[should_panic(expected = "Condition not satisfied for Err(41)")]
         fn it_fails_on_err_but_condition_not_satisfied() {
-            let x: Result<Debuggable, i32> = Err(42);
-            let _ = x.assert_err_and(|x| x == &21);
-            //          ^-- should panic here
+            let x: Result<Debuggable, i32> = Err(41);
+            let _ = x.assert_err_and(|x| x == &21).map_err(|x| x + 1);
+            //        ^-- should panic here
         }
 
         #[test]
         #[should_panic(expected = "Expected Err(_), got Ok(Debuggable)")]
         fn it_fails_on_ok() {
             let x: Result<Debuggable, i32> = Ok(Debuggable);
-            let _ = x.assert_err_and(|x| x == &42).map(|x| x);
-            //          ^-- should panic here
+            let _ = x.assert_err_and(|x| x == &21).map_err(|x| x * 2);
+            //        ^-- should panic here
         }
     }
 
@@ -496,12 +510,9 @@ mod tests {
 
         #[test]
         fn it_succeeds_on_err() {
-            let x: Result<Debuggable, NonDebuggable> = Err(NonDebuggable);
-            let x = x.debug_assert_err();
-            assert!(
-                matches!(x, Err(NonDebuggable)),
-                "Expected Err(NonDebuggable)"
-            );
+            let x: Result<Debuggable, i32> = Err(41);
+            let x = x.debug_assert_err().map_err(|x| x + 1);
+            assert!(matches!(x, Err(42)), "Expected Err(42)");
         }
 
         #[test]
@@ -511,9 +522,11 @@ mod tests {
         )]
 
         fn it_fails_on_ok_only_in_debug_mode() {
-            let x: Result<Debuggable, NonDebuggable> = Ok(Debuggable);
-            let x = x.debug_assert_err();
+            let x: Result<Debuggable, i32> = Ok(Debuggable);
+            let x = x.debug_assert_err().map_err(|x| x + 1);
             //        ^-- panic here only in debug builds
+
+            // for debug builds
             assert!(matches!(x, Ok(Debuggable)), "Expected Ok(Debuggable)");
         }
     }
@@ -536,10 +549,24 @@ mod tests {
         )]
         fn it_fails_on_invalid_err() {
             let x: Result<Debuggable, i32> = Err(21);
-            let x = x.debug_assert_err_and(|_| false).map_err(|x| x * 2);
+            let x = x.debug_assert_err_and(|x| x < &21).map_err(|x| x * 2);
             //        ^-- should panic here only in debug builds
 
             assert_eq!(x, Err(42), "Expected Err(42)");
+        }
+
+        #[test]
+        #[cfg_attr(
+            all(debug_assertions, not(feature = "passthrough")),
+            should_panic = "Expected Err(_), got Ok(Debuggable)"
+        )]
+        fn it_fails_on_ok() {
+            let x: Result<Debuggable, i32> = Ok(Debuggable);
+            let x = x.debug_assert_err_and(|x| x >= &20).map_err(|x| x + 1);
+            //        ^-- should panic here only in debug builds
+
+            // for debug builds
+            assert!(matches!(x, Ok(Debuggable)), "Expected Ok(Debuggable)");
         }
     }
 }

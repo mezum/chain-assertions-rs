@@ -190,7 +190,7 @@ where
     fn assert_some_and(self, cond: impl FnOnce(&T) -> bool) -> Self {
         match self {
             Some(ref v) if cond(v) => { /* do nothing */ }
-            Some(ref v) => panic!("Condition not satisfied for Ok({:?})", v),
+            Some(ref v) => panic!("Condition not satisfied for Some({:?})", v),
             None => panic!("Expected Some(_), got None"),
         }
         self
@@ -203,7 +203,7 @@ where
         {
             match self {
                 Some(ref v) if _cond(v) => { /* do nothing */ }
-                Some(ref v) => panic!("Condition not satisfied for Ok({:?})", v),
+                Some(ref v) => panic!("Condition not satisfied for Some({:?})", v),
                 None => panic!("Expected Some(_), got None"),
             }
         }
@@ -268,7 +268,7 @@ mod tests {
         }
     }
 
-    mod assert_ok_and {
+    mod assert_some_and {
         use super::super::*;
 
         #[test]
@@ -279,9 +279,17 @@ mod tests {
         }
 
         #[test]
-        #[should_panic(expected = "Condition not satisfied for Ok(19)")]
+        #[should_panic(expected = "Condition not satisfied for Some(19)")]
         fn it_fails_on_ok_and_condition_not_satisfied() {
             let x: Option<i32> = Some(19);
+            let _ = x.assert_some_and(|x| x >= &20).map(|x| x * 2);
+            //        ^-- should panic here
+        }
+
+        #[test]
+        #[should_panic(expected = "Expected Some(_), got None")]
+        fn it_fails_on_none() {
+            let x: Option<i32> = None;
             let _ = x.assert_some_and(|x| x >= &20).map(|x| x * 2);
             //        ^-- should panic here
         }
@@ -318,7 +326,7 @@ mod tests {
         use super::super::*;
 
         #[test]
-        fn it_succeeds_on_ok_and_condition_satisfied() {
+        fn it_succeeds_on_some_and_condition_satisfied() {
             let x: Option<i32> = Some(21);
             let x = x.debug_assert_some_and(|x| x >= &20).map(|x| x * 2);
 
@@ -328,15 +336,23 @@ mod tests {
         #[test]
         #[cfg_attr(
             all(debug_assertions, not(feature = "passthrough")),
-            should_panic(expected = "Condition not satisfied for Ok(19)")
+            should_panic(expected = "Condition not satisfied for Some(19)")
         )]
-        fn it_fails_on_ok_and_condition_not_satisfied() {
+        fn it_fails_on_some_and_condition_not_satisfied() {
             let x: Option<i32> = Some(19);
             let x = x.debug_assert_some_and(|x| x >= &20).map(|x| x * 2);
             //        ^-- should panic here only in debug mode
 
             // for debug builds
             assert_eq!(x, Some(38));
+        }
+
+        #[test]
+        #[should_panic(expected = "Expected Some(_), got None")]
+        fn it_fails_on_none() {
+            let x: Option<i32> = None;
+            let _ = x.assert_some_and(|x| x >= &20).map(|x| x * 2);
+            //        ^-- should panic here
         }
     }
 
