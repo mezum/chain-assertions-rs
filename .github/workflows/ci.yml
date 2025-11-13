@@ -22,6 +22,10 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
+        rust-toolchain:
+          - "stable"
+          - "nightly"
+          - "1.56.1"
         release-flag:
           - "--release"
           - ""
@@ -32,5 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust-toolchain }}
       - name: Run tests
         run: cargo test ${{ matrix.release-flag }} ${{ matrix.passthrough-flag }}
