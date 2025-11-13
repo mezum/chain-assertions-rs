@@ -13,7 +13,7 @@ pub trait AssertOkExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<i32, &str> = Ok(21);
-    /// let x = x.assert_ok().map(|v| v * 2);
+    /// let x = x.assert_ok().map(|x| x * 2);
     /// assert_eq!(x, Ok(42));
     /// ```
     ///
@@ -21,7 +21,7 @@ pub trait AssertOkExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<i32, &str> = Err("oops");
-    /// let _ = x.assert_ok().map(|v| v * 2);
+    /// let _ = x.assert_ok().map(|x| x * 2);
     /// //        ^-- panics here
     /// ```
     fn assert_ok(self) -> Self;
@@ -44,7 +44,7 @@ pub trait AssertOkExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<i32, &str> = Ok(21);
-    /// let x = x.debug_assert_ok().map(|v| v * 2);
+    /// let x = x.debug_assert_ok().map(|x| x * 2);
     /// assert_eq!(x, Ok(42));
     /// ```
     fn debug_assert_ok(self) -> Self;
@@ -52,7 +52,7 @@ pub trait AssertOkExt {
 
 /// An extension trait to add the assertion_ok_and methods.
 pub trait AssertOkAndExt<T> {
-    /// Asserts the [`Result`] is [`Ok`] and satisfy the condition.
+    /// Asserts the [`Result`] is [`Ok`] and satisfies the condition.
     ///
     /// # Panics
     ///
@@ -67,13 +67,14 @@ pub trait AssertOkAndExt<T> {
     /// # Examples
     /// ```rust
     /// use chain_assertions::prelude::*;
+    ///
     /// let x: Result<i32, &str> = Ok(21);
-    /// let x = x.assert_ok_and(|v| v == &21).map(|v| v * 2);
+    /// let x = x.assert_ok_and(|x| x == &21).map(|x| x * 2);
     /// assert_eq!(x, Ok(42), "Expected Ok(42)");
     /// ```
     fn assert_ok_and(self, cond: impl FnOnce(&T) -> bool) -> Self;
 
-    /// Asserts the [`Result`] is [`Ok`] and satisfy the condition only in debug builds.
+    /// Asserts the [`Result`] is [`Ok`] and satisfies the condition only in debug builds.
     ///
     /// # Panics
     ///
@@ -89,8 +90,9 @@ pub trait AssertOkAndExt<T> {
     ///
     /// ```rust
     /// use chain_assertions::prelude::*;
+    ///
     /// let x: Result<i32, &str> = Ok(21);
-    /// let x = x.debug_assert_ok_and(|v| v == &21).map(|v| v * 2);
+    /// let x = x.debug_assert_ok_and(|x| x == &21).map(|x| x * 2);
     /// assert_eq!(x, Ok(42), "Expected Ok(42)");
     /// ```
     fn debug_assert_ok_and(self, cond: impl FnOnce(&T) -> bool) -> Self;
@@ -111,7 +113,7 @@ pub trait AssertErrExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<&str, i32> = Err(21);
-    /// let x = x.assert_err().map_err(|v| v * 2);
+    /// let x = x.assert_err().map_err(|x| x * 2);
     /// assert_eq!(x, Err(42));
     /// ```
     ///
@@ -119,7 +121,7 @@ pub trait AssertErrExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<&str, i32> = Ok("success");
-    /// let x = x.assert_err().map_err(|v| v * 2);
+    /// let x = x.assert_err().map_err(|x| x * 2);
     /// //        ^-- panics here
     /// ```
     fn assert_err(self) -> Self;
@@ -142,11 +144,11 @@ pub trait AssertErrExt {
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<&str, i32> = Err(21);
-    /// let x = x.debug_assert_err().map_err(|e| e * 2);
+    /// let x = x.debug_assert_err().map_err(|x| x * 2);
     /// assert_eq!(x, Err(42), "Expected Err(42)");
     /// ```
     ///
-    /// ```rust,ignore
+    /// ```rust,should_panic,ignore
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<&str, i32> = Ok("success");
@@ -158,7 +160,7 @@ pub trait AssertErrExt {
 }
 
 pub trait AssertErrAndExt<T, E> {
-    /// Asserts the [`Result`] is [`Err`] and satisfy the condition.
+    /// Asserts the [`Result`] is [`Err`] and satisfies the condition.
     ///
     /// # Panics
     ///
@@ -173,21 +175,21 @@ pub trait AssertErrAndExt<T, E> {
     /// # Examples
     /// ```rust
     /// use chain_assertions::prelude::*;
-    /// let x: Result<&str, i32> = Err(21);
     ///
-    /// let x = x.assert_err_and(|v| v == &21).map_err(|e| e * 2);
+    /// let x: Result<&str, i32> = Err(21);
+    /// let x = x.assert_err_and(|x| x == &21).map_err(|x| x * 2);
     /// ```
     ///
     /// ```rust,should_panic
     /// use chain_assertions::prelude::*;
     ///
     /// let x: Result<&str, i32> = Ok("debuggable");
-    /// let x = x.assert_err_and(|v| v == &42).map_err(|e| e + 1);
+    /// let x = x.assert_err_and(|x| x == &42).map_err(|x| x + 1);
     /// //        ^-- panics here
     /// ```
     fn assert_err_and(self, cond: impl FnOnce(&E) -> bool) -> Self;
 
-    /// Asserts the [`Result`] is [`Err`] and satisfy the condition only in debug builds.
+    /// Asserts the [`Result`] is [`Err`] and satisfies the condition only in debug builds.
     ///
     /// # Panics
     ///
@@ -203,15 +205,17 @@ pub trait AssertErrAndExt<T, E> {
     ///
     /// ```rust
     /// use chain_assertions::prelude::*;
+    ///
     /// let x: Result<&str, i32> = Err(21);
-    /// let x = x.debug_assert_err_and(|v| v == &21).map_err(|e| e * 2);
+    /// let x = x.debug_assert_err_and(|x| x == &21).map_err(|x| x * 2);
     /// assert_eq!(x, Err(42), "Expected Err(42)");
     /// ```
     ///
-    /// ```rust,ignore
+    /// ```rust,should_panic,ignore
     /// use chain_assertions::prelude::*;
+    ///
     /// let x: Result<&str, i32> = Ok("debuggable");
-    /// let x = x.debug_assert_err_and(|v| v == &42).map_err(|e| e + 1);
+    /// let x = x.debug_assert_err_and(|x| x == &42).map_err(|x| x + 1);
     /// //        ^-- panics here only in debug builds
     /// ```
     fn debug_assert_err_and(self, cond: impl FnOnce(&E) -> bool) -> Self;
@@ -224,8 +228,8 @@ where
     #[track_caller]
     #[inline]
     fn assert_ok(self) -> Self {
-        if let Err(ref e) = self {
-            panic!("Expected Ok(_), got Err({:?})", e);
+        if let Err(ref x) = self {
+            panic!("Expected Ok(_), got Err({:?})", x);
         }
         self
     }
@@ -235,8 +239,8 @@ where
     fn debug_assert_ok(self) -> Self {
         #[cfg(all(debug_assertions, not(feature = "passthrough")))]
         {
-            if let Err(ref e) = self {
-                panic!("Expected Ok(_), got Err({:?})", e);
+            if let Err(ref x) = self {
+                panic!("Expected Ok(_), got Err({:?})", x);
             }
         }
         self
@@ -252,13 +256,9 @@ where
     #[inline]
     fn assert_ok_and(self, cond: impl FnOnce(&T) -> bool) -> Self {
         match self {
-            Ok(ref v) if cond(v) => { /* do nothing */ }
-            Ok(ref v) => {
-                panic!("Condition not satisfied for Ok({:?})", v);
-            }
-            Err(e) => {
-                panic!("Expected Ok(_), got Err({:?})", e);
-            }
+            Ok(ref x) if cond(x) => { /* do nothing */ }
+            Ok(ref x) => panic!("Condition not satisfied for Ok({:?})", x),
+            Err(ref x) => panic!("Expected Ok(_), got Err({:?})", x),
         }
         self
     }
@@ -269,13 +269,9 @@ where
         #[cfg(all(debug_assertions, not(feature = "passthrough")))]
         {
             match self {
-                Ok(ref v) if _cond(v) => { /* do nothing */ }
-                Ok(ref v) => {
-                    panic!("Condition not satisfied for Ok({:?})", v);
-                }
-                Err(e) => {
-                    panic!("Expected Ok(_), got Err({:?})", e);
-                }
+                Ok(ref x) if _cond(x) => { /* do nothing */ }
+                Ok(ref x) => panic!("Condition not satisfied for Ok({:?})", x),
+                Err(ref x) => panic!("Expected Ok(_), got Err({:?})", x),
             }
         }
         self
@@ -289,8 +285,8 @@ where
     #[track_caller]
     #[inline]
     fn assert_err(self) -> Self {
-        if let Ok(ref v) = self {
-            panic!("Expected Err(_), got Ok({:?})", v);
+        if let Ok(ref x) = self {
+            panic!("Expected Err(_), got Ok({:?})", x);
         }
         self
     }
@@ -300,8 +296,8 @@ where
     fn debug_assert_err(self) -> Self {
         #[cfg(all(debug_assertions, not(feature = "passthrough")))]
         {
-            if let Ok(ref v) = self {
-                panic!("Expected Err(_), got Ok({:?})", v);
+            if let Ok(ref x) = self {
+                panic!("Expected Err(_), got Ok({:?})", x);
             }
         }
         self
@@ -317,13 +313,9 @@ where
     #[inline]
     fn assert_err_and(self, cond: impl FnOnce(&E) -> bool) -> Self {
         match self {
-            Err(ref v) if cond(v) => { /* do nothing */ }
-            Err(ref v) => {
-                panic!("Condition not satisfied for Err({:?})", v);
-            }
-            Ok(e) => {
-                panic!("Expected Err(_), got Ok({:?})", e);
-            }
+            Err(ref x) if cond(x) => { /* do nothing */ }
+            Err(ref x) => panic!("Condition not satisfied for Err({:?})", x),
+            Ok(ref x) => panic!("Expected Err(_), got Ok({:?})", x),
         }
         self
     }
@@ -334,13 +326,9 @@ where
         #[cfg(all(debug_assertions, not(feature = "passthrough")))]
         {
             match self {
-                Err(ref v) if _cond(v) => { /* do nothing */ }
-                Err(ref v) => {
-                    panic!("Condition not satisfied for Err({:?})", v);
-                }
-                Ok(e) => {
-                    panic!("Expected Err(_), got Ok({:?})", e);
-                }
+                Err(ref x) if _cond(x) => { /* do nothing */ }
+                Err(ref x) => panic!("Condition not satisfied for Err({:?})", x),
+                Ok(ref x) => panic!("Expected Err(_), got Ok({:?})", x),
             }
         }
         self
@@ -379,9 +367,9 @@ mod tests {
         use super::{super::*, *};
 
         #[test]
-        fn it_succeeds_on_ok_and_condition_is_satisfied() {
+        fn it_succeeds_on_ok_and_condition_satisfied() {
             let x: Result<i32, Debuggable> = Ok(42);
-            let x = x.assert_ok_and(|v| v == &42);
+            let x = x.assert_ok_and(|x| x == &42);
             assert_eq!(x, Ok(42), "Expected Ok(42)");
         }
 
@@ -389,7 +377,7 @@ mod tests {
         #[should_panic(expected = "Condition not satisfied for Ok(42)")]
         fn it_fails_on_ok_but_condition_not_satisfied() {
             let x: Result<i32, Debuggable> = Ok(42);
-            let _ = x.assert_ok_and(|v| v == &21);
+            let _ = x.assert_ok_and(|x| x == &21);
             //        ^-- should panic here
         }
 
@@ -397,7 +385,7 @@ mod tests {
         #[should_panic(expected = "Expected Ok(_), got Err(Debuggable)")]
         fn it_fails_on_err() {
             let x: Result<i32, Debuggable> = Err(Debuggable);
-            let _ = x.assert_ok_and(|v| v == &21).map(|v| v * 2);
+            let _ = x.assert_ok_and(|x| x == &21).map(|x| x * 2);
             //        ^-- should panic here
         }
     }
@@ -434,7 +422,7 @@ mod tests {
         #[test]
         fn it_succeeds_on_satisfied_ok() {
             let x: Result<i32, Debuggable> = Ok(21);
-            let x = x.debug_assert_ok_and(|v| v == &21).map(|v| v * 2);
+            let x = x.debug_assert_ok_and(|x| x == &21).map(|x| x * 2);
 
             assert_eq!(x, Ok(42), "Expected Ok(42)");
         }
@@ -446,7 +434,7 @@ mod tests {
         )]
         fn it_fails_on_invalid_ok() {
             let x: Result<i32, Debuggable> = Ok(21);
-            let x = x.debug_assert_ok_and(|_| false).map(|v| v * 2);
+            let x = x.debug_assert_ok_and(|_| false).map(|x| x * 2);
             //        ^-- should panic here only in debug builds
 
             // for debug builds
@@ -480,9 +468,9 @@ mod tests {
         use super::{super::*, *};
 
         #[test]
-        fn it_succeeds_on_err_and_condition_is_satisfied() {
+        fn it_succeeds_on_err_and_condition_satisfied() {
             let x: Result<Debuggable, i32> = Err(42);
-            let x = x.assert_err_and(|v| v == &42);
+            let x = x.assert_err_and(|x| x == &42);
             assert_eq!(x, Err(42), "Expected Err(42)");
         }
 
@@ -490,7 +478,7 @@ mod tests {
         #[should_panic(expected = "Condition not satisfied for Err(42)")]
         fn it_fails_on_err_but_condition_not_satisfied() {
             let x: Result<Debuggable, i32> = Err(42);
-            let _ = x.assert_err_and(|v| v == &21);
+            let _ = x.assert_err_and(|x| x == &21);
             //          ^-- should panic here
         }
 
@@ -498,7 +486,7 @@ mod tests {
         #[should_panic(expected = "Expected Err(_), got Ok(Debuggable)")]
         fn it_fails_on_ok() {
             let x: Result<Debuggable, i32> = Ok(Debuggable);
-            let _ = x.assert_err_and(|v| v == &42).map(|v| v);
+            let _ = x.assert_err_and(|x| x == &42).map(|x| x);
             //          ^-- should panic here
         }
     }
@@ -536,7 +524,7 @@ mod tests {
         #[test]
         fn it_succeeds_on_satisfied_err() {
             let x: Result<Debuggable, i32> = Err(21);
-            let x = x.debug_assert_err_and(|v| v == &21).map_err(|v| v * 2);
+            let x = x.debug_assert_err_and(|x| x == &21).map_err(|x| x * 2);
 
             assert_eq!(x, Err(42), "Expected Err(42)");
         }
@@ -548,7 +536,7 @@ mod tests {
         )]
         fn it_fails_on_invalid_err() {
             let x: Result<Debuggable, i32> = Err(21);
-            let x = x.debug_assert_err_and(|_| false).map_err(|v| v * 2);
+            let x = x.debug_assert_err_and(|_| false).map_err(|x| x * 2);
             //        ^-- should panic here only in debug builds
 
             assert_eq!(x, Err(42), "Expected Err(42)");
