@@ -19,7 +19,7 @@ Install the crate into your `Cargo.toml`:
 chain-assertions = "0.1"
 
 # Add `passthrough` to disable checking on debug builds.
-# chain-assertions = { version = "0.1", features = ["disable"] }
+# chain-assertions = { version = "0.1", features = ["passthrough"] }
 
 # Set default-features to false in no-std environment:
 # chain-assertions = { version = "0.1", default-features = false }
