@@ -1,8 +1,12 @@
 # chain-assertions
 
-[![Workflow Status](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
-[![crates.io](https://img.shields.io/crates/v/chain-assertions.svg)](https://crates.io/crates/chain-assertions)
-[![docs.rs](https://docs.rs/chain-assertions/badge.svg)](https://docs.rs/chain-assertions)
+[![Repository](https://img.shields.io/badge/repository-GitHub-brightgreen?logo=github)](https://github.com/mezum/chain-assertions-rs)
+[![Latest Version](https://img.shields.io/crates/v/chain-assertions.svg)](https://crates.io/crates/chain-assertions)
+[![Documentations](https://img.shields.io/docsrs/chain-assertions?logo=docsdotrs)](https://docs.rs/chain-assertions)
+![License](https://img.shields.io/crates/l/chain-assertions)
+![MSRV](https://img.shields.io/crates/msrv/chain-assertions?logo=rust)
+![Coverage](https://img.shields.io/codecov/c/github/mezum/chain-assertions-rs?logo=codecov)
+[![CI](https://github.com/mezum/chain-assertions-rs/workflows/ci/badge.svg)](https://github.com/mezum/chain-assertions-rs/actions?query=workflow%3A%22ci%22)
 
 This crate provides the assertion that can be insert between method chains.
 
